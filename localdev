@@ -1,27 +1,35 @@
 #!/bin/bash
 
-source ${PWD}/.localdev
+function build_image {
+    local localdev_gid=`id -g ${USER}`
+    local localdev_uid=`id -u ${USER}`
 
-localdev_gid=`id -g ${USER}`
-localdev_uid=`id -u ${USER}`
-
-if [ ! -f .localdev-image ]; then
     echo "Building image..."
     docker build -q \
         --build-arg localdev_group_id=${localdev_gid} \
         --build-arg localdev_user_id=${localdev_uid} \
-        -t coba_runner \
-        https://github.com/DockerLocalDev/${runner}-localdev.git \
-        > .localdev-image
+        https://github.com/DockerLocalDev/$1-localdev.git \
+        > ${PWD}/.localdev/$1
 
     if [ $? != 0 ]; then
-        echo Failed building image
+        echo Failed building image $1
         exit 1
     fi
+}
+
+function run {
+    local image_id=`cat ${PWD}/.localdev/$1`
+    shift
+    echo "Run container..."
+    docker run -it --rm \
+        -v ${PWD}:/home/localdev/workspace \
+        "${image_id}" "$@"
+}
+
+mkdir -p ${PWD}/.localdev
+
+if [ ! -f ${PWD}/.localdev/$1 ]; then
+    build_image $1
 fi
 
-image_id=`cat .localdev-image`
-
-docker run -it --rm \
-    -v ${PWD}:/home/localdev/workspace \
-    "${image_id}" "$@"
+run "$@"
