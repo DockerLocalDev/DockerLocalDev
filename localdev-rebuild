@@ -1,0 +1,19 @@
+#!/bin/bash
+
+source ${PWD}/.localdev
+
+localdev_gid=`id -g ${USER}`
+localdev_uid=`id -u ${USER}`
+
+echo "Building image..."
+docker build -q \
+    --build-arg localdev_group_id=${localdev_gid} \
+    --build-arg localdev_user_id=${localdev_uid} \
+    -t coba_runner \
+    https://github.com/DockerLocalDev/${runner}-localdev.git \
+    > .localdev-image
+
+if [ $? != 0 ]; then
+    echo Failed building image
+    exit 1
+fi
