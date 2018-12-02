@@ -22,6 +22,7 @@ localdev asciidoctor-fopub fopub sample.xml
 
 ## Available tools
 
+- [asciidoctor](https://github.com/DockerLocalDev/asciidoctor-localdev)
 - [asciidoctor-fopub](https://github.com/DockerLocalDev/asciidoctor-fopub-localdev)
 
 ## TODO
