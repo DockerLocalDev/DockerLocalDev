@@ -1,19 +1,17 @@
 #!/bin/bash
 
-source ${PWD}/.localdev
-
 localdev_gid=`id -g ${USER}`
 localdev_uid=`id -u ${USER}`
 
-echo "Building image..."
+echo "Building image of $1..."
 docker build -q \
     --build-arg localdev_group_id=${localdev_gid} \
     --build-arg localdev_user_id=${localdev_uid} \
-    -t coba_runner \
-    https://github.com/DockerLocalDev/${runner}-localdev.git \
-    > .localdev-image
+    https://github.com/DockerLocalDev/$1-localdev.git \
+    > ${PWD}/.localdev/$1
 
 if [ $? != 0 ]; then
-    echo Failed building image
+    rm ${PWD}/.localdev/$1
+    echo Failed building image $1
     exit 1
 fi

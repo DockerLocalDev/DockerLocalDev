@@ -4,7 +4,7 @@ function build_image {
     local localdev_gid=`id -g ${USER}`
     local localdev_uid=`id -u ${USER}`
 
-    echo "Building image..."
+    echo "Building image of $1..."
     docker build -q \
         --build-arg localdev_group_id=${localdev_gid} \
         --build-arg localdev_user_id=${localdev_uid} \
@@ -19,8 +19,8 @@ function build_image {
 
 function run {
     local image_id=`cat ${PWD}/.localdev/$1`
+    echo "Run container for $1..."
     shift
-    echo "Run container..."
     docker run -it --rm \
         -v ${PWD}:/home/localdev/workspace \
         "${image_id}" "$@"
