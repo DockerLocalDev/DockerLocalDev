@@ -21,7 +21,7 @@ function run {
     local image_id=`cat ${PWD}/.localdev/$1`
     echo "Run container for $1..."
     shift
-    docker run --rm \
+    docker run -it --rm \
         -v ${PWD}:/home/localdev/workspace \
         "${image_id}" "$@"
 }
